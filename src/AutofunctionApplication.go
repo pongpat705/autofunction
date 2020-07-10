@@ -4,20 +4,47 @@ import (
 	"autofunction/src/stuct"
 	"encoding/json"
 	"fmt"
-	"github.com/go-vgo/robotgo"
-	hook "github.com/robotn/gohook"
 	"io/ioutil"
+	"log"
 	"os"
-	"strings"
+	"syscall"
+	"unsafe"
+)
+
+var (
+	moduser32       = syscall.NewLazyDLL("user32.dll")
+	procSendInput   = moduser32.NewProc("SendInput")
+	procPostMessage = moduser32.NewProc("PostMessageW")
+	procFindWindowW = moduser32.NewProc("FindWindowW")
 )
 
 func main() {
-	var function1 = os.Getenv("jsonPath")
-	fmt.Printf("%s : param function1 = %s", "hello test", function1)
-	var config = readJsonFile(function1)
-	playground(config)
-	fmt.Printf("%s", "done program")
+	//var function1 = os.Getenv("jsonPath")
+	//fmt.Printf("%s : param function1 = %s", "hello test", function1)
+	//var config = readJsonFile(function1)
+	//playground(config)
+	//fmt.Printf("%s", "done program")
+	auto()
+}
 
+func auto() {
+
+	var processId = getProcessId("Ragnarok")
+	const WM_KEYDOWN = 0x100
+	postMessage(processId, WM_KEYDOWN, 0x41, 0)
+
+}
+
+func getProcessId(windowName string) uintptr {
+	ret, _, err := procFindWindowW.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(windowName))), 0)
+	log.Printf("getProcessId ret: %v error: %v", ret, err)
+
+	return ret
+}
+
+func postMessage(processId uintptr, keyType uint32, key int32, param int32) {
+	ret, _, err := procPostMessage.Call(processId, uintptr(keyType), uintptr(key), uintptr(param))
+	log.Printf("postMessage ret: %v error: %v", ret, err)
 }
 
 func readJsonFile(jsonfile string) stuct.ConfigModel {
@@ -38,52 +65,4 @@ func readJsonFile(jsonfile string) stuct.ConfigModel {
 	defer jsonFile.Close()
 
 	return config
-}
-
-func playground(config stuct.ConfigModel) {
-
-	evChan := hook.Start()
-	defer hook.End()
-
-	var pressCtrl = false
-	var pressEscape = false
-	for ev := range evChan {
-		fmt.Println("hook: ", ev)
-
-		var color = getPixelAtMousePointerColor(config.IndicatorPositionX, config.IndicatorPositionY)
-		isColorWhiteDo(color, config.KeyToPress)
-
-		//break program
-		if ev.Kind == hook.KeyHold && ev.Keychar == 65535 {
-			pressCtrl = true
-		}
-		if ev.Kind == hook.KeyUp && ev.Keychar == 65535 {
-			pressCtrl = false
-		}
-		if pressCtrl && ev.Keychar == 27 {
-			pressEscape = true
-		}
-		fmt.Printf("pressCtrl %t pressEscape %t ", pressCtrl, pressEscape)
-		if pressCtrl && pressEscape {
-			break
-		}
-
-	}
-}
-
-func getPixelAtMousePointerColor(x int, y int) string {
-	//x, y := robotgo.GetMousePos()
-	color := robotgo.GetPixelColor(x, y)
-	fmt.Printf("Color of pixel at (%d, %d) is 0x%s\n", x, y, color)
-	return color
-}
-
-func isColorWhiteDo(color string, keyToPress string) {
-	if color == strings.ToLower("FFFFFF") {
-		fmt.Printf("tapping %s\n", keyToPress)
-		err := robotgo.KeyTap(keyToPress)
-		if err != "" {
-			fmt.Println("robotgo.KeyTap run error is: ", err)
-		}
-	}
 }

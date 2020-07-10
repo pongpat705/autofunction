@@ -1,5 +1,8 @@
 {
-  "indicatorPositionX" : 780,
-  "indicatorPositionY" : 480,
-  "keyToPress" : "q"
+  "startPositionX" : 285,
+  "startPositionY" : 185,
+  "endPositionX" : 410,
+  "endPositionY" : 185,
+  "keyPressDelay" : 1,
+  "keyToPress" : "r"
 }
