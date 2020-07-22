@@ -1,8 +1,14 @@
 {
-  "startPositionX" : 285,
-  "startPositionY" : 185,
-  "endPositionX" : 410,
-  "endPositionY" : 185,
-  "keyPressDelay" : 1,
-  "keyToPress" : "r"
+  "config" : [
+    {
+      "spec" : "key",
+      "delay" : 0,
+      "key" : "r"
+    },
+    {
+      "spec" : "wait",
+      "delay" : 7000,
+      "key" : ""
+    }
+  ]
 }
