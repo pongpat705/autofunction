@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"os"
 	"strings"
 	"syscall"
@@ -94,8 +93,7 @@ func auto(config stuct.ConfigModel) {
 				var keyInt = keyChar[key]
 				postMessage(processId, WM_KEYDOWN, keyInt, 0)
 			} else if spec == "wait" {
-				var yourTime = rand.Int31n(int32(delay))
-				var duration = time.Duration(yourTime) * time.Millisecond
+				var duration = time.Duration(delay) * time.Millisecond
 				time.Sleep(duration)
 			}
 		}
