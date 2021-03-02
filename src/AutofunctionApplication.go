@@ -89,7 +89,9 @@ func main() {
 	var config = readJsonFile(arg1)
 	var processId = getProcessId("Ragnarok")
 	if config.Mode == "LOOP" {
-		auto(config, processId)
+		for true {
+			auto(config, processId)
+		}
 	} else if config.Mode == "LISTEN" {
 		keyPressing(config, processId)
 	}
@@ -99,22 +101,20 @@ func main() {
 
 func auto(config stuct.ConfigModel, processId uintptr) {
 
-	for true {
-		for _, elm := range config.Config {
-			var spec = elm.Spec
-			var key = strings.ToUpper(elm.Key)
-			var delay = elm.Delay
+	for _, elm := range config.Config {
+		var spec = elm.Spec
+		var key = strings.ToUpper(elm.Key)
+		var delay = elm.Delay
 
-			if spec == "key" {
-				var keyInt = keyChar[key]
-				postMessage(processId, sysAction["KEYDOWN"], keyInt, 0)
-			} else if spec == "wait" {
-				var duration = time.Duration(delay) * time.Millisecond
-				time.Sleep(duration)
-			} else if spec == "mouse" {
-				var keyInt = sysAction[key]
-				postMessage(processId, keyInt, keyInt, 0)
-			}
+		if spec == "key" {
+			var keyInt = keyChar[key]
+			postMessage(processId, sysAction["KEYDOWN"], keyInt, 0)
+		} else if spec == "wait" {
+			var duration = time.Duration(delay) * time.Millisecond
+			time.Sleep(duration)
+		} else if spec == "mouse" {
+			var keyInt = sysAction[key]
+			postMessage(processId, keyInt, keyInt, 0)
 		}
 	}
 
