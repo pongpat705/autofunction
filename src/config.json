@@ -1,13 +1,25 @@
 {
+  "mode" : "LISTEN",
+  "whenPressKey" : "t",
   "config" : [
     {
-      "spec" : "key",
+      "spec" : "mouse",
       "delay" : 0,
-      "key" : "r"
+      "key" : "LEFT_BUTTONDOWN"
     },
     {
       "spec" : "wait",
-      "delay" : 7000,
+      "delay" : 10,
+      "key" : ""
+    },
+    {
+      "spec" : "mouse",
+      "delay" : 0,
+      "key" : "LEFT_BUTTONUP"
+    },
+    {
+      "spec" : "wait",
+      "delay" : 100,
       "key" : ""
     }
   ]
